@@ -1,0 +1,24 @@
+# Scripte, die nur fuer interne Nutzung oder zu Testzwecken erstellt wurden
+# Nur zwingend erforderliche Script-Dateien werden ausgenommen.
+*.sh
+!build_rs353_linux.sh
+# Port-Kit: diese drei Skripte sind Teil des Ports, nicht intern.
+# Ohne sie laesst sich der Build aus dem Repo heraus nicht ausfuehren.
+!port/apply.sh
+!port/phase4.sh
+!port/tree/target/linux/lantiq/base-files/etc/uci-defaults/09_fix_crc.sh
+*.ps1
+restore.py
+
+
+# Ablage fuer alte/archivierte Dateien (nur lokal, nicht auf GitHub)
+z_*
+
+# Interne Doku nicht auf GitHub pushen: Umsetzungsplaene, Konzepte, TODOs.
+# Nur zwingend oeffentliche Markdown-Dateien sind ausgenommen.
+*.md
+!CHANGELOG.md
+!README*.md
+!LICENSE.md
+!BLUEPRINT*.md
+!BUILD_HOWTO.md

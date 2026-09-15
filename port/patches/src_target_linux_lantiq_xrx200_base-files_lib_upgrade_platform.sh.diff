@@ -1,0 +1,51 @@
+diff --git a/target/linux/lantiq/xrx200/base-files/lib/upgrade/platform.sh b/target/linux/lantiq/xrx200/base-files/lib/upgrade/platform.sh
+index ab01d3bbf7..4ab9aca995 100755
+--- a/target/linux/lantiq/xrx200/base-files/lib/upgrade/platform.sh
++++ b/target/linux/lantiq/xrx200/base-files/lib/upgrade/platform.sh
+@@ -20,8 +20,46 @@ platform_do_upgrade() {
+ 	zyxel,p-2812hnu-f3)
+ 		nand_do_upgrade $1
+ 		;;
++	bintec,rs353)
++		check_fixboss || exit 1
++		default_do_upgrade "$1"
++		do_fixboss || exit 1
++		;;
+ 	*)
+ 		default_do_upgrade "$1"
+ 		;;
+ 	esac
+ }
++
++# K2: 'mtd fixboss' setzt die BOSS-Header-Pruefsumme nach dem Schreiben des
++# Images neu. Ohne diese Korrektur startet der Bootmonitor das neue Image
++# nicht. Die Verfuegbarkeit wird VOR default_do_upgrade geprueft, solange das
++# alte, lauffaehige Image noch im Flash steht.
++check_fixboss() {
++	if ! command -v mtd >/dev/null 2>&1; then
++		echo "sysupgrade: 'mtd' not found, cannot fix the BOSS header checksum" >&2
++		echo "sysupgrade: aborting, the written image would not boot" >&2
++		return 1
++	fi
++	if ! mtd 2>&1 | grep -q fixboss; then
++		echo "sysupgrade: this 'mtd' build has no 'fixboss' command" >&2
++		echo "sysupgrade: aborting, the written image would not boot" >&2
++		return 1
++	fi
++	return 0
++}
++
++# Fallback-Kette: schlaegt fixboss hier fehl, bleibt nur
++# target/linux/lantiq/base-files/etc/uci-defaults/09_fix_crc.sh. Das laeuft
++# erst beim ersten Boot des neuen Images und bleibt bei Rueckgabe != 0 fuer
++# den naechsten Boot liegen - es greift also nur, wenn das Geraet ueberhaupt
++# bootet. Deshalb hier die laute Fehlermeldung statt eines stillen Weiter.
++do_fixboss() {
++	if ! mtd fixboss firmware; then
++		echo "sysupgrade: 'mtd fixboss firmware' failed after writing the image" >&2
++		echo "sysupgrade: BOSS header checksum is stale, do not reboot" >&2
++		echo "sysupgrade: run 'mtd fixboss firmware' manually and check its exit code" >&2
++		return 1
++	fi
++	return 0
++}

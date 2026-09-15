@@ -1,0 +1,25 @@
+# Zeilenenden im Repo erzwingen.
+# Grund: core.autocrlf=true ist auf dem Windows-Host gesetzt. Ohne diese
+# Datei bekommt ein Windows-Klon CRLF in die Arbeitskopie. Ein Shell-Skript
+# mit CRLF bricht auf dem Linux-Build-Host sofort ab:
+#   bash: build_rs353_linux.sh: /usr/bin/env^M: bad interpreter
+# Ein Patch mit CRLF wird von "git apply" verworfen.
+
+# Default: Git erkennt Text selbst, im Arbeitsbaum immer LF.
+* text=auto eol=lf
+
+# Explizit, damit die Regel beim Lesen sofort sichtbar ist.
+*.sh    text eol=lf
+*.patch text eol=lf
+*.diff  text eol=lf
+*.dts   text eol=lf
+*.c     text eol=lf
+*.h     text eol=lf
+Makefile text eol=lf
+Dockerfile text eol=lf
+
+# Binaerartefakte nie umschreiben.
+*.cev binary
+*.bin binary
+*.img binary
+*.gz  binary
