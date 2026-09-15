@@ -11,6 +11,12 @@
 restore.py
 
 
+# Fremde Forks, aus denen der Port stammt. Eigene Klone fremder Repos,
+# ohne lokale Aenderungen. Nicht ins Repo: rund 500 MB Fremdcode ohne
+# Nutzen fuer den Build. Herkunft mit Commit steht in README.md.
+openwrt-RS353_1/
+openwrt-RS353_2/
+
 # Ablage fuer alte/archivierte Dateien (nur lokal, nicht auf GitHub)
 z_*
 

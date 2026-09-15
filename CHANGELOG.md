@@ -2,6 +2,38 @@
 
 Format: SemVer + ISO-Datum. Sektionen: Hinzugefuegt / Geaendert / Behoben / Entfernt / Verifiziert.
 
+## [0.2.3] - 2026-09-15
+### Entfernt
+- Gitlinks `openwrt-RS353_1` und `openwrt-RS353_2` (Modus `160000`) aus dem
+  Index. Es gab kein `.gitmodules`, also weder Submodul noch Inhalt; auf GitHub
+  ergab das zwei Ordner, deren Klick ins Leere fuehrt. `git rm --cached`
+  scheitert an solchen Eintraegen (`pathspec did not match any files`), entfernt
+  wurde mit `git update-index --force-remove`. Arbeitsverzeichnisse unberuehrt.
+
+### Hinzugefuegt
+- `README.md`: Abschnitt "Herkunft" mit Repo-URL, Branch, Commit-SHA und Datum
+  beider Forks, Klon-Kommando und Hinweis, dass auf `master` von
+  `openwrt-RS353_2` keine RS353-Dateien liegen.
+- `.gitignore`: `openwrt-RS353_1/`, `openwrt-RS353_2/` gesperrt, mit
+  Begruendung (rund 500 MB Fremdcode ohne Nutzen fuer den Build).
+
+### Geaendert
+- `README.md`: Zweck und Struktur-Tabelle nennen die Forks als lokale Referenz
+  ausserhalb des Repos; Abschnitt "Git-Stand" erklaert die entfernten Gitlinks;
+  `port/`-Zeile auf den tatsaechlichen Inhalt gebracht.
+- `MVC.md`: Fremdcode-Bullet vermerkt "nur lokal, seit 2026-09-15 nicht im Git".
+- `ERKLAERUNG.md`: Entscheidung Gitlink-Entfernung gegen Submodul und gegen
+  Einchecken des Fremdcodes, mit Begruendung.
+
+### Verifiziert
+- `git ls-files -s | grep 160000` liefert keine Zeile mehr.
+- `git status --short`: `D openwrt-RS353_1`, `D openwrt-RS353_2` gestaged,
+  23 Dateien getrackt.
+- `openwrt-RS353_1/.git` und `openwrt-RS353_2/.git` liegen unveraendert auf
+  Platte; `git check-ignore -v` weist beide Ordner den `.gitignore`-Zeilen zu.
+- NICHT erledigt: Commit und Push. Der Remote-Stand `af2805d` enthaelt die
+  kaputten Gitlinks weiterhin, bis gepusht wird.
+
 ## [0.2.2] - 2026-09-15
 ### Hinzugefuegt
 - `.gitattributes`: `* text=auto eol=lf` plus explizite Regeln fuer `*.sh`,
